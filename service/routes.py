@@ -114,7 +114,7 @@ def get_products(product_id):
     result = Product.find(int(product_id))
     if result is None:
         return '', status.HTTP_404_NOT_FOUND
-    
+
     dictionary = result.serialize()
     return dictionary, status.HTTP_200_OK
 
@@ -122,11 +122,12 @@ def get_products(product_id):
 # U P D A T E   A   P R O D U C T
 ######################################################################
 
+
 @app.route("/products/<product_id>", methods=["PUT"])
 def put_products(product_id):
     """
     Updates a Product
-    This endpoint will read a update based on the id and data given
+    This endpoint will update a product based on the id and data given
     """
     product_id = int(product_id) if product_id else None
     check_content_type("application/json")
@@ -151,6 +152,21 @@ def put_products(product_id):
 ######################################################################
 
 
-#
-# PLACE YOUR CODE TO DELETE A PRODUCT HERE
-#
+@app.route("/products/<product_id>", methods=["DELETE"])
+def delete_products(product_id):
+    """
+    Deletes a Product
+    This endpoint will delete a product based on the id and data given
+    """
+    product_id = int(product_id) if product_id else None
+
+    app.logger.info("Processing: %s", request)
+
+    product = Product.find(product_id)
+
+    if product is None:
+        return '', status.HTTP_404_NOT_FOUND
+
+    app.logger.info("Product with id [%s] is being deleted!", product.id)
+    product.delete()
+    return '', status.HTTP_204_NO_CONTENT

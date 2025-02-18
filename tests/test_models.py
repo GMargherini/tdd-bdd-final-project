@@ -220,7 +220,7 @@ class TestProductModel(unittest.TestCase):
 
         for p in found_products:
             self.assertEqual(p.category, category)
-    
+
     def test_find_by_price(self):
         """It should find a product by the given price"""
         products = []

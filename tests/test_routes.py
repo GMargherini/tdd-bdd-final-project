@@ -185,7 +185,6 @@ class TestProductRoutes(TestCase):
         response = self.client.get(f'{BASE_URL}/{test_product.id + 1}')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-
     def test_update_product(self):
         """It should update a product"""
         test_product = self._create_products()[0]
@@ -210,6 +209,20 @@ class TestProductRoutes(TestCase):
         response = self.client.put(f'{BASE_URL}/{test_product.id}', json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_delete_product(self):
+        """It should delete a product"""
+        test_product = self._create_products()[0]
+        response = self.client.get(f'{BASE_URL}/{test_product.id}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.delete(f'{BASE_URL}/{test_product.id}')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_non_existing_product(self):
+        """It should fail to delete a product if it does not exist"""
+        test_product = ProductFactory()
+        response = self.client.delete(f'{BASE_URL}/{test_product.id}')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     ######################################################################
     # Utility functions

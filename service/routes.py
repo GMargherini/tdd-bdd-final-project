@@ -89,8 +89,7 @@ def create_products():
     #
     # Uncomment this line of code once you implement READ A PRODUCT
     #
-    # location_url = url_for("get_products", product_id=product.id, _external=True)
-    location_url = "/"  # delete once READ is implemented
+    location_url = url_for("get_products", product_id=product.id, _external=True)
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
 
@@ -106,17 +105,45 @@ def create_products():
 # R E A D   A   P R O D U C T
 ######################################################################
 
-#
-# PLACE YOUR CODE HERE TO READ A PRODUCT
-#
+@app.route("/products/<product_id>", methods=["GET"])
+def get_products(product_id):
+    """
+    Reads a Product
+    This endpoint will read a Product based on the id
+    """
+    result = Product.find(int(product_id))
+    if result is None:
+        return '', status.HTTP_404_NOT_FOUND
+    
+    dictionary = result.serialize()
+    return dictionary, status.HTTP_200_OK
 
 ######################################################################
 # U P D A T E   A   P R O D U C T
 ######################################################################
 
-#
-# PLACE YOUR CODE TO UPDATE A PRODUCT HERE
-#
+@app.route("/products/<product_id>", methods=["PUT"])
+def put_products(product_id):
+    """
+    Updates a Product
+    This endpoint will read a update based on the id and data given
+    """
+    check_content_type("application/json")
+
+    app.logger.info("Processing: %s", request)
+
+    data = request.get_json()
+    app.logger.info("Processing: %s", data)
+    product = Product()
+
+    if product.id is None:
+        return '', status.HTTP_404_NOT_FOUND
+
+    product.deserialize(data)
+    product.update()
+    app.logger.info("Product with id [%s] updated!", product.id)
+    result = product.serialize()
+    return result, status.HTTP_200_OK
 
 ######################################################################
 # D E L E T E   A   P R O D U C T

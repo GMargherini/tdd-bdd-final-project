@@ -186,22 +186,29 @@ class TestProductRoutes(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-    # def test_update_product(self):
-    #     """It should update a product"""
-    #     test_product = self._create_products()[0]
-    #     response = self.client.get(f'{BASE_URL}/{test_product.id}')
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_update_product(self):
+        """It should update a product"""
+        test_product = self._create_products()[0]
+        response = self.client.get(f'{BASE_URL}/{test_product.id}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    #     test_product.name = 'foo'
-    #     response = self.client.put(f'{BASE_URL}/{test_product.id}', json=test_product.serialize())
-    #     data = response.get_json()
-    #     logging.debug(response.get_json())
+        test_product.name = 'foo'
+        logging.debug(test_product.id)
+        response = self.client.put(f'{BASE_URL}/{test_product.id}', json=test_product.serialize())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
 
-    #     self.assertEqual(data['name'], test_product.name)
-    #     self.assertEqual(data['description'], test_product.description)
-    #     self.assertEqual(Decimal(data['price']), test_product.price)
-    #     self.assertEqual(data['available'], test_product.available)
-    #     self.assertEqual(data['category'], test_product.category.name)
+        self.assertEqual(data['name'], test_product.name)
+        self.assertEqual(data['description'], test_product.description)
+        self.assertEqual(Decimal(data['price']), test_product.price)
+        self.assertEqual(data['available'], test_product.available)
+        self.assertEqual(data['category'], test_product.category.name)
+
+    def test_update_non_existing_product(self):
+        """It should fail to update a product if it does not exist"""
+        test_product = ProductFactory()
+        response = self.client.put(f'{BASE_URL}/{test_product.id}', json=test_product.serialize())
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
     ######################################################################

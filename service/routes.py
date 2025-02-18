@@ -128,15 +128,16 @@ def put_products(product_id):
     Updates a Product
     This endpoint will read a update based on the id and data given
     """
+    product_id = int(product_id) if product_id else None
     check_content_type("application/json")
 
     app.logger.info("Processing: %s", request)
 
     data = request.get_json()
     app.logger.info("Processing: %s", data)
-    product = Product()
+    product = Product.find(product_id)
 
-    if product.id is None:
+    if product is None:
         return '', status.HTTP_404_NOT_FOUND
 
     product.deserialize(data)

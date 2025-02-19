@@ -97,9 +97,33 @@ def create_products():
 # L I S T   A L L   P R O D U C T S
 ######################################################################
 
-#
-# PLACE YOUR CODE TO LIST ALL PRODUCTS HERE
-#
+@app.route("/products", methods=["GET"])
+def get_all_products():
+    """
+    Reads all Products
+    This endpoint will read all Products
+    """
+    products = []
+    if request.args.get('name'):
+        parameter = request.args.get('name')
+    elif request.args.get('category'):
+        parameter = request.args.get('category')
+    elif request.args.get('availability'):
+        parameter = request.args.get('availability')
+    else:
+        parameter = ''
+
+    if parameter:
+        products = Product.find_by_name(parameter)
+    else:
+        products = Product.all()
+    if not products:
+        return [], status.HTTP_404_NOT_FOUND
+
+    results = [p.serialize() for p in products]
+
+    return results, status.HTTP_200_OK
+
 
 ######################################################################
 # R E A D   A   P R O D U C T

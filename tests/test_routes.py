@@ -263,7 +263,7 @@ class TestProductRoutes(TestCase):
         """It should list all products in the database with the given availability"""
         products = self._create_products(5)
         test_product = products[0]
-        response = self.client.get(f'{BASE_URL}', query_string={'availability': test_product.available})
+        response = self.client.get(f'{BASE_URL}', query_string={'available': test_product.available})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         found = response.get_json()
         for p in found:
